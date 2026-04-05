@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hacked Screen</title>
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+    font-family: "Courier New", monospace;
+    color: #00ff00;
+}
+
+/* Matrix Canvas */
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Center Text */
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+}
+
+h1 {
+    font-size: 55px; /* increased */
+    text-shadow: 0 0 15px #00ff00;
+}
+
+/* UPDATED WARNING TEXT */
+.warning {
+    color: red;
+    font-size: 40px; /* increased */
+    margin-top: 30px;
+    text-shadow: 0 0 15px red;
+    white-space: nowrap;
+}
+
+.reason {
+    color: red;
+    font-size: 26px; /* increased */
+    margin-top: 12px;
+    white-space: nowrap;
+}
+
+/* Glitch Effect */
+.glitch {
+    animation: glitch 1s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    25% { transform: translate(-2px, 2px); }
+    50% { transform: translate(2px, -2px); }
+    75% { transform: translate(-2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+/* Scanline */
+.scanline {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: rgba(0,255,0,0.2);
+    animation: scan 3s linear infinite;
+    z-index: 1;
+}
+
+@keyframes scan {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="scanline"></div>
+
+<div class="container">
+    <h1 id="text" class="glitch"></h1>
+
+    <div class="warning">⚠ WARNING ⚠</div>
+    <div class="reason">This ID was hacked to access Messenger</div>
+
+</div>
+
+<script>
+// MATRIX RAIN EFFECT
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize = 16;
+const columns = canvas.width / fontSize;
+
+const drops = [];
+for (let x = 0; x < columns; x++) {
+    drops[x] = 1;
+}
+
+function draw() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#00ff00";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+            drops[i] = 0;
+
+        drops[i]++;
+    }
+}
+
+setInterval(draw, 33);
+
+// TYPING EFFECT
+const message = "Your ID has been hacked by Cyber Club...";
+let i = 0;
+
+function typeWriter() {
+    if (i < message.length) {
+        document.getElementById("text").innerHTML += message.charAt(i);
+        i++;
+        playBeep();
+        setTimeout(typeWriter, 50);
+    }
+}
+
+typeWriter();
+
+// SOUND EFFECT (beep)
+function playBeep() {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = ctx.createOscillator();
+    oscillator.type = "square";
+    oscillator.frequency.setValueAtTime(800, ctx.currentTime);
+    oscillator.connect(ctx.destination);
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.05);
+}
+</script>
+
+</body>
+</html>
